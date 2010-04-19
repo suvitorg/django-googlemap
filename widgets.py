@@ -56,6 +56,7 @@ class LocationWidget(forms.widgets.Widget):
                savePosition_%(name)s(point);
                 });
         map_%(name)s.addOverlay(m);
+        savePosition_%(name)s(point);
 
     }
     function savePosition_%(name)s(point)
@@ -119,10 +120,10 @@ class LocationField(forms.Field):
     widget = LocationWidget
 
     def clean(self, value):
+         
         if isinstance(value, unicode):
             a, b = value.split(',')
         else:
             a, b = value
-            
         lat, lng = float(a), float(b)
         return "%f,%f" % (lat, lng)
