@@ -16,7 +16,7 @@ DEFAULT_LONGTITUDE = getattr(settings, 'GMAP_DEFAULT_LONGTITUDE', 60.6073)
 class LocationWidget(forms.widgets.Widget):
     
     class Media:
-        js = ["http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=x",]
+        js = ["http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false",]
     
     def __init__(self, *args, **kw):
         self.map_width = kw.get("map_width", DEFAULT_WIDTH)
@@ -108,12 +108,10 @@ class LocationWidget(forms.widgets.Widget):
             }); </script>
             
         ''' % dict(name=name, lat=lat, lng=lng, def_lat=DEFAULT_LATITUDE, def_lng=DEFAULT_LONGTITUDE)
-        
         html = self.inner_widget.render("%s" % name, "%f,%f" % (lat,lng), dict(id='id_%s' % name))
-        html += "<div id=\"map_%s\" class=\"gmap\" style=\"width: %dpx; height: %dpx\"></div>" % (name, self.map_width, self.map_height)
-        
-        html += '<a href="#" onclick="resetPosition_%(name)s()">Сбросить</a>' % dict(name=name)
-        return mark_safe((js+html))
+        html += u"<div id=\"map_%s\" class=\"gmap\" style=\"width: %dpx; height: %dpx\"></div>" % (name, self.map_width, self.map_height)
+        html += u'<a href="#" onclick="resetPosition_%(name)s()">Сбросить</a>' % dict(name=name)
+        return mark_safe(js + html)
 
 
 class LocationField(forms.Field):
