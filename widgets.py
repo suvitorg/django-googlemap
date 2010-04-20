@@ -58,7 +58,7 @@ class LocationWidget(forms.widgets.Widget):
                 });
         map_%(name)s.addOverlay(m);
         savePosition_%(name)s(point);
-
+        return false;
     }
     function savePosition_%(name)s(point)
     {
