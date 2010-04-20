@@ -110,7 +110,7 @@ class LocationWidget(forms.widgets.Widget):
             
         ''' % dict(name=name, lat=lat, lng=lng, def_lat=DEFAULT_LATITUDE, def_lng=DEFAULT_LONGTITUDE)
         html = self.inner_widget.render("%s" % name, "%f,%f" % (lat,lng), dict(id='id_%s' % name))
-        html += u"<div id=\"map_%s\" class=\"gmap\" style=\"width: %dpx; height: %dpx\"></div>" % (name, self.map_width, self.map_height)
+        html += u"<div id=\"map_%s\" class=\"gmap\" style=\"width: %dpx; height: %dpx; float: left;\"></div>" % (name, self.map_width, self.map_height)
         html += u'<a href="#" onclick=" return resetPosition_%(name)s()">Сбросить</a>' % dict(name=name)
         return mark_safe(js + html)
 
