@@ -11,8 +11,8 @@ DEFAULT_HEIGHT = 300
 DEFAULT_LATITUDE = getattr(settings, 'GMAP_DEFAULT_LATITUDE', 56.8436)
 DEFAULT_LONGTITUDE = getattr(settings, 'GMAP_DEFAULT_LONGTITUDE', 60.6073)
 
+# TODO use google map api version 3, it doesn`t required api_key
 API_KEY = getattr(settings, 'GOOGLE_MAP_KEY', '')
-
 
 class LocationWidget(forms.widgets.Widget):
     
