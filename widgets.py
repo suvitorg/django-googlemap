@@ -11,12 +11,13 @@ DEFAULT_HEIGHT = 300
 DEFAULT_LATITUDE = getattr(settings, 'GMAP_DEFAULT_LATITUDE', 56.8436)
 DEFAULT_LONGTITUDE = getattr(settings, 'GMAP_DEFAULT_LONGTITUDE', 60.6073)
 
+API_KEY = getattr(settings, 'GOOGLE_MAP_KEY', '')
 
 
 class LocationWidget(forms.widgets.Widget):
     
     class Media:
-        js = ["http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false",]
+        js = ["http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=%s" % API_KEY,]
     
     def __init__(self, *args, **kw):
         self.map_width = kw.get("map_width", DEFAULT_WIDTH)
