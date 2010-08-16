@@ -102,12 +102,10 @@ class LocationWidget(forms.widgets.Widget):
             });
         }
     }
-//]]>
-</script> 
-<script type="text/javascript">
 $(document).ready(function() {    
   load_%(name)s();
 });
+//]]>
 </script>
 ''' % dict(name=name, lat=lat, lng=lng, def_lat=DEFAULT_LATITUDE, def_lng=DEFAULT_LONGTITUDE)
         html = self.inner_widget.render("%s" % name, "%f,%f" % (lat,lng), dict(id='id_%s' % name))
