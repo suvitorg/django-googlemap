@@ -14,7 +14,7 @@ DEFAULT_LONGTITUDE = getattr(settings, 'GMAP_DEFAULT_LONGTITUDE', 60.6073)
 class LocationWidget(forms.widgets.Widget):
     
     class Media:
-        js = ["http://maps.google.com/maps?file=api&amp;v=3&amp;sensor=false",
+        js = ["http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false",
              ]
     
     def __init__(self, *args, **kw):
