@@ -1,20 +1,28 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from django.utils.safestring import mark_safe
 from django.conf import settings
+from django.template.loader import render_to_string
 
 DEFAULT_WIDTH = 500
 DEFAULT_HEIGHT = 300
 
-
 DEFAULT_LATITUDE = getattr(settings, 'GMAP_DEFAULT_LATITUDE', 56.8436)
 DEFAULT_LONGTITUDE = getattr(settings, 'GMAP_DEFAULT_LONGTITUDE', 60.6073)
+
+def get_latlng(value):
+    if isinstance(value, unicode):
+        a, b = value.split(',')
+    else:
+        a, b = value
+
+    return float(a), float(b)
+
 
 class LocationWidget(forms.widgets.Widget):
     
     class Media:
-        js = ["http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false",
+        js = ["http://maps.google.com/maps?file=api&amp;v=3&amp;sensor=false",
              ]
     
     def __init__(self, *args, **kw):
@@ -27,99 +35,27 @@ class LocationWidget(forms.widgets.Widget):
     def render(self, name, value, *args, **kwargs):
         
         if not value:
-            a = DEFAULT_LATITUDE
-            b = DEFAULT_LONGTITUDE
-        else:    
-            if isinstance(value, unicode):
-                a, b = value.split(',')
-            else:
-                a, b = value
+            lat = DEFAULT_LATITUDE
+            lng = DEFAULT_LONGTITUDE
+        else:
+            lat, lng = get_latlng(value)
         
-        lat, lng = float(a), float(b)
-        
-        js = '''
-        <script type="text/javascript">
-        //<![CDATA[
+        inner_widget = self.inner_widget.render("%s" % name,
+                                                "%f,%f" % (lat,lng),
+                                                dict(id='id_%s' % name))
 
-        var map_%(name)s;
-    
-    function resetPosition_%(name)s()
-    {
-        var point = new GLatLng(%(def_lat)f, %(def_lng)f)
-        
-        map_%(name)s.clearOverlays();
-        m = new GMarker(point, {draggable: true});
-        map_%(name)s.setCenter(point, 15);
-        GEvent.addListener(m, "dragend", function() {
-               point = m.getPoint();
-               savePosition_%(name)s(point);
-                });
-        map_%(name)s.addOverlay(m);
-        savePosition_%(name)s(point);
-        return false;
-    }
-    function savePosition_%(name)s(point)
-    {
-        var latitude = document.getElementById("id_%(name)s");
-        //var longitude = document.getElementById("id_%(name)s_longitude");
-        latitude.value = point.lat().toFixed(6) + "," + point.lng().toFixed(6);
-        //longitude.value = point.lng().toFixed(6);
-        map_%(name)s.panTo(point);
-    }
-
-    function load_%(name)s() {
-        if (GBrowserIsCompatible()) {
-            map_%(name)s = new GMap2(document.getElementById("map_%(name)s"));
-            map_%(name)s.addControl(new GSmallMapControl());
-            map_%(name)s.addControl(new GMapTypeControl());
-
-            var point = new GLatLng(%(lat)f, %(lng)f);
-            map_%(name)s.setCenter(point, 15);
-            m = new GMarker(point, {draggable: true});
-
-            GEvent.addListener(m, "dragend", function() {
-                    point = m.getPoint();
-                    savePosition_%(name)s(point);
-            });
-
-            map_%(name)s.addOverlay(m);
-
-            /* save coordinates on clicks */
-            GEvent.addListener(map_%(name)s, "click", function (overlay, point) {
-                savePosition_%(name)s(point);
-            
-                map_%(name)s.clearOverlays();
-                m = new GMarker(point, {draggable: true});
-
-                GEvent.addListener(m, "dragend", function() {
-                    point = m.getPoint();
-                    savePosition_%(name)s(point);
-                });
-
-                map_%(name)s.addOverlay(m);
-            });
-        }
-    }
-$(document).ready(function() {    
-  load_%(name)s();
-});
-//]]>
-</script>
-''' % dict(name=name, lat=lat, lng=lng, def_lat=DEFAULT_LATITUDE, def_lng=DEFAULT_LONGTITUDE)
-        html = self.inner_widget.render("%s" % name, "%f,%f" % (lat,lng), dict(id='id_%s' % name))
-        html += u"<div id=\"map_%s\" class=\"gmap\" style=\"width: %dpx; height: %dpx; float: left;\"></div>" % (name, self.map_width, self.map_height)
-        html += u'<a href="#" onclick=" return resetPosition_%(name)s()">Сбросить</a>' % dict(name=name)
-        return mark_safe(js + html)
+        return render_to_string('googlemap/widget.html',
+                  {'name':name,
+                   'lat':lat, 'lng':lng,
+                   'def_lat':DEFAULT_LATITUDE, 'def_lng':DEFAULT_LONGTITUDE,
+                   'inner_widget':inner_widget,
+                   'map_width':self.map_width,
+                   'map_height':self.map_height
+                  })
 
 
 class LocationField(forms.Field):
     widget = LocationWidget
 
     def clean(self, value):
-         
-        if isinstance(value, unicode):
-            a, b = value.split(',')
-        else:
-            a, b = value
-        lat, lng = float(a), float(b)
-        return "%f,%f" % (lat, lng)
+        return "%f,%f" % get_latlng(value)
