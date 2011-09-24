@@ -22,7 +22,9 @@ def get_latlng(value):
 class LocationWidget(forms.widgets.Widget):
     
     class Media:
-        js = ["http://maps.google.com/maps?file=api&amp;v=3&amp;sensor=false",
+        js = ["http://maps.googleapis.com/maps/api/js?sensor=false",
+              settings.MEDIA_URL + 'js/jquery-1.4.2.min.js',
+              settings.MEDIA_URL + 'js/googlemap/manager.js',
              ]
     
     def __init__(self, *args, **kw):
@@ -46,7 +48,6 @@ class LocationWidget(forms.widgets.Widget):
 
         return render_to_string('googlemap/widget.html',
                   {'name':name,
-                   'lat':lat, 'lng':lng,
                    'def_lat':DEFAULT_LATITUDE, 'def_lng':DEFAULT_LONGTITUDE,
                    'inner_widget':inner_widget,
                    'map_width':self.map_width,

@@ -1,73 +1,10 @@
 <script type="text/javascript">
 //<![CDATA[
-
-    var map_{{name}};
-    
-    function resetPosition_{{name}}()
-    {
-        var point = new GLatLng({{def_lat}}, {{def_lng}})
-        
-        map_{{name}}.clearOverlays();
-        m = new GMarker(point, {draggable: true});
-        map_{{name}}.setCenter(point, 15);
-        GEvent.addListener(m, "dragend", function() {
-               point = m.getPoint();
-               savePosition_{{name}}(point);
-                });
-        map_{{name}}.addOverlay(m);
-        savePosition_{{name}}(point);
-        return false;
-    }
-    function savePosition_{{name}}(point)
-    {
-        var latitude = document.getElementById("id_{{name}}");
-        //var longitude = document.getElementById("id_{{name}}_longitude");
-        latitude.value = point.lat().toFixed(6) + "," + point.lng().toFixed(6);
-        //longitude.value = point.lng().toFixed(6);
-        map_{{name}}.panTo(point);
-    }
-
-    function load_{{name}}() {
-        if (GBrowserIsCompatible()) {
-            map = new GMap2(document.getElementById("map_{{name}}"));
-            map.addControl(new GSmallMapControl());
-            map.addControl(new GMapTypeControl());
-
-            var point = new GLatLng({{lat}}, {{lng}});
-            map.setCenter(point, 15);
-            m = new GMarker(point, {draggable: true});
-
-            GEvent.addListener(m, "dragend", function() {
-                    point = m.getPoint();
-                    savePosition_{{name}}(point);
-            });
-
-            map.addOverlay(m);
-
-            /* save coordinates on clicks */
-            GEvent.addListener(map, "click", function (overlay, point) {
-                savePosition_{{name}}(point);
-            
-                map.clearOverlays();
-                m = new GMarker(point, {draggable: true});
-
-                GEvent.addListener(m, "dragend", function() {
-                    point = m.getPoint();
-                    savePosition_{{name}}(point);
-                });
-
-                map.addOverlay(m);
-            });
-        }
-    }
-$(document).ready(function() {    
-  load_{{name}}();
-});
+var GoogleMapManager = GoogleMapManager || {};
+GoogleMapManager.options.def_point = new google.maps.LatLng({{def_lat}}, {{def_lng}});
 //]]>
 </script>
 {{inner_widget}}
 <div id="map_{{name}}"
      class="gmap"
      style="width: {{map_width}}px; height: {{map_height}}px; float: left;"></div>
-<a href="#"
-   onclick="return resetPosition_{{name}}">Сбросить</a>
