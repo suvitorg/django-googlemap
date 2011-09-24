@@ -19,7 +19,7 @@ def get_latlng(value):
     return float(a), float(b)
 
 
-class LocationWidget(forms.widgets.Widget):
+class LocationWidget(forms.widgets.HiddenInput):
     
     class Media:
         js = ["http://maps.googleapis.com/maps/api/js?sensor=false",
@@ -28,11 +28,10 @@ class LocationWidget(forms.widgets.Widget):
              ]
     
     def __init__(self, *args, **kw):
+        super(LocationWidget, self).__init__(*args, **kw)
+
         self.map_width = kw.get("map_width", DEFAULT_WIDTH)
         self.map_height = kw.get("map_height", DEFAULT_HEIGHT)
-        
-        super(LocationWidget, self).__init__(*args, **kw)
-        self.inner_widget = forms.widgets.HiddenInput()
 
     def render(self, name, value, *args, **kwargs):
         
@@ -42,14 +41,13 @@ class LocationWidget(forms.widgets.Widget):
         else:
             lat, lng = get_latlng(value)
         
-        inner_widget = self.inner_widget.render("%s" % name,
-                                                "%f,%f" % (lat,lng),
-                                                dict(id='id_%s' % name))
+        inner_widget = super(LocationWidget, self).render(name,
+                                                          "%f,%f" % (lat,lng),
+                                                          dict(id='id_%s' % name))
 
-        return render_to_string('googlemap/widget.html',
+        return inner_widget + render_to_string('googlemap/widget.html',
                   {'name':name,
                    'def_lat':DEFAULT_LATITUDE, 'def_lng':DEFAULT_LONGTITUDE,
-                   'inner_widget':inner_widget,
                    'map_width':self.map_width,
                    'map_height':self.map_height
                   })

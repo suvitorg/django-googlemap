@@ -1,10 +1,11 @@
+{{inner_widget}}
+<div id="map_{{name}}"
+     class="gmap"
+     style="width: {{map_width}}px; height: {{map_height}}px; float: left;"></div>
 <script type="text/javascript">
 //<![CDATA[
 var GoogleMapManager = GoogleMapManager || {};
 GoogleMapManager.options.def_point = new google.maps.LatLng({{def_lat}}, {{def_lng}});
 //]]>
 </script>
-{{inner_widget}}
-<div id="map_{{name}}"
-     class="gmap"
-     style="width: {{map_width}}px; height: {{map_height}}px; float: left;"></div>
+
