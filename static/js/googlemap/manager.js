@@ -55,6 +55,7 @@ var GoogleMapManager = GoogleMapManager || {
     $.each(markers, function(i, item){
       item.setMap(null);
     });
+    markers.length = 0;
   },
   resetPosition: function(map){
     var point = GoogleMapManager.options.def_point;
