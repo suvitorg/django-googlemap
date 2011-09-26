@@ -1,23 +1,37 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
+# -*- coding: utf-8 -*-
+from __future__ import with_statement
 
 from django.test import TestCase
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
+from googlemap.widgets import LocationWidget, LocationField
+
+class GoogleMapTest(TestCase):
+    def test_widget(self):
         """
         Tests that 1 + 1 always equals 2.
         """
-        self.failUnlessEqual(1 + 1, 2)
+        widget = LocationWidget()
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+        rendered = widget.render('location', '55,55')
 
->>> 1 + 1 == 2
-True
-"""}
+        self.assertTrue('input type="hidden" name="location"' in rendered)
+        self.assertTrue('55' in rendered)
+
+        rendered = widget.render('location', None)
+
+        self.assertTrue('input type="hidden" name="location"' in rendered)
+
+
+    def test_field(self):
+        field = LocationField()
+     
+        val = field.clean('55,55')
+        with self.assertRaises(ValueError):
+            val = field.clean('55.55')
+        with self.assertRaises(ValueError):
+            val = field.clean('aaa')
+        with self.assertRaises(TypeError):
+            val = field.clean(None)
+        with self.assertRaises(ValueError):
+            val = field.clean('55,aaa')
 

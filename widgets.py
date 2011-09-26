@@ -11,7 +11,7 @@ DEFAULT_LATITUDE = getattr(settings, 'GMAP_DEFAULT_LATITUDE', 56.8436)
 DEFAULT_LONGTITUDE = getattr(settings, 'GMAP_DEFAULT_LONGTITUDE', 60.6073)
 
 def get_latlng(value):
-    if isinstance(value, unicode):
+    if isinstance(value, basestring):
         a, b = value.split(',')
     else:
         a, b = value
