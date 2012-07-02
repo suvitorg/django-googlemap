@@ -23,7 +23,7 @@ class LocationWidget(forms.widgets.HiddenInput):
 
     class Media:
         js = ["http://maps.googleapis.com/maps/api/js?sensor=false",
-              settings.MEDIA_URL + 'js/jquery-1.4.2.min.js',
+              settings.STATIC_URL + '/admin/js/jquery.min.js',
               settings.STATIC_URL + '/googlemap/js/manager.js',
              ]
 
