@@ -1,4 +1,4 @@
-// author PROGWAY LLC
+// Author: PROGWAY LLC
 // (c) 2011
 
 var GoogleMapManager = GoogleMapManager || {
@@ -35,14 +35,14 @@ var GoogleMapManager = GoogleMapManager || {
   add_marker: function(map, point){
     gmap = $(map).data('gmap');
     markers = $(map).data('gmapmarkers');
- 
+
     var m = new google.maps.Marker({
       position: point, 
       map: gmap,
       draggable: true,
       title : GoogleMapManager.options.marker_title
     });
-  
+
     markers.push(m);
 
     google.maps.event.addListener(m, "dragend", function() {
@@ -99,6 +99,6 @@ var GoogleMapManager = GoogleMapManager || {
   }
 };
 
-$(document).ready(function() {    
+$(document).ready(function() {
   GoogleMapManager.init();
 });
