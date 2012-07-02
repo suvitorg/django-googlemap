@@ -24,7 +24,7 @@ class LocationWidget(forms.widgets.HiddenInput):
     class Media:
         js = ["http://maps.googleapis.com/maps/api/js?sensor=false",
               settings.MEDIA_URL + 'js/jquery-1.4.2.min.js',
-              settings.MEDIA_URL + 'js/googlemap/manager.js',
+              settings.MEDIA_URL + '/googlemap/js/manager.js',
              ]
 
     def __init__(self, *args, **kw):
