@@ -9,27 +9,44 @@ var GoogleMapManager = GoogleMapManager || {
     marker_title: 'Координаты адреса',
     restore_title: 'Сбросить'
   },
+  inited: false,
   init: function() {
-    if (!(google || google.maps))
+    if (!(window['google'] && google.maps))
+      return;
+
+    if (GoogleMapManager.inited)
       return;
 
     $('div.' + GoogleMapManager.options.div_class).each(function(){
-      map = this;
-      input = $(map).prev().find('input');
-      latlng = input.val().split(',', 2);
-      var point = new google.maps.LatLng(parseFloat(latlng[0]),
-                                          parseFloat(latlng[1]));
+      var map = $(this),
+          center,
+          simple = false;
 
-      GoogleMapManager.load(map, point);
- 
-      //add clear link
-      $(map).after('<a href="#">' + GoogleMapManager.options.restore_title +'</a>')
-            .next('a').click(function(){
-        GoogleMapManager.resetPosition($(this).prev('div'));
-        return false;
-      });
+      if (map.attr('center')) {
+        center = map.attr('center');
+        simple = true;
+      }
+      else
+        center = map.prev().find('input').val();
+      var latlng = center.split(',', 2);
+
+      var point = new google.maps.LatLng(parseFloat(latlng[0]),
+                                         parseFloat(latlng[1]));
+
+      GoogleMapManager.load(this, point, simple);
+
+      if (!simple) {
+        //add clear link
+        map.after('<a href="#">' + GoogleMapManager.options.restore_title +'</a>')
+              .next('a').click(function(){
+          GoogleMapManager.resetPosition($(this).prev('div'));
+          return false;
+        });
+      }
 
     });
+
+    GoogleMapManager.inited = true;
   },
 
   add_marker: function(map, point){
@@ -37,7 +54,7 @@ var GoogleMapManager = GoogleMapManager || {
     markers = $(map).data('gmapmarkers');
 
     var m = new google.maps.Marker({
-      position: point, 
+      position: point,
       map: gmap,
       draggable: true,
       title : GoogleMapManager.options.marker_title
@@ -75,7 +92,7 @@ var GoogleMapManager = GoogleMapManager || {
     input = $(map).prev().find('input');
     input.val(point.lat().toFixed(6) + "," + point.lng().toFixed(6));
   },
-  load: function(map, point) {
+  load: function(map, point, simple) {
     var center = point;
 
     var myOptions = {
@@ -90,15 +107,17 @@ var GoogleMapManager = GoogleMapManager || {
 
     GoogleMapManager.add_marker(map, point);
 
-    /* save coordinates on clicks */
-    google.maps.event.addListener(gmap, "click", function (event) {
-      GoogleMapManager.clear_markers(map);
-      GoogleMapManager.add_marker(map, event.latLng);
-      GoogleMapManager.savePosition(map, event.latLng);
-    });
-  }
+    if (!simple) {
+      /* save coordinates on clicks */
+      google.maps.event.addListener(gmap, "click", function (event) {
+        GoogleMapManager.clear_markers(map);
+        GoogleMapManager.add_marker(map, event.latLng);
+        GoogleMapManager.savePosition(map, event.latLng);
+      });
+    }
+  },
 };
 
 $(document).ready(function() {
-  GoogleMapManager.init();
+  $.getScript("http://maps.google.com/maps/api/js?sensor=true&callback=GoogleMapManager.init");
 });
