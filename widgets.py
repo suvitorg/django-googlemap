@@ -19,12 +19,12 @@ def get_latlng(value):
     return float(a), float(b)
 
 
-class LocationWidget(forms.widgets.HiddenInput):
+class LocationWidget(forms.widgets.Input):
 
     class Media:
         js = ["http://maps.googleapis.com/maps/api/js?sensor=false",
-              settings.STATIC_URL + '/admin/js/jquery.min.js',
-              settings.STATIC_URL + '/googlemap/js/manager.js',
+              #settings.STATIC_URL + 'admin/js/jquery.min.js',
+              settings.STATIC_URL + 'googlemap/js/manager.js',
              ]
 
     def __init__(self, *args, **kw):

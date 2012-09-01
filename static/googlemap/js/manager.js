@@ -15,7 +15,7 @@ var GoogleMapManager = GoogleMapManager || {
 
     $('div.' + GoogleMapManager.options.div_class).each(function(){
       map = this;
-      input = $(map).prev();
+      input = $(map).prev().find('input');
       latlng = input.val().split(',', 2);
       var point = new google.maps.LatLng(parseFloat(latlng[0]),
                                           parseFloat(latlng[1]));
@@ -72,7 +72,7 @@ var GoogleMapManager = GoogleMapManager || {
     gmap = $(map).data('gmap');
     gmap.panTo(point);
 
-    input = $(map).prev('input');
+    input = $(map).prev().find('input');
     input.val(point.lat().toFixed(6) + "," + point.lng().toFixed(6));
   },
   load: function(map, point) {
@@ -91,10 +91,10 @@ var GoogleMapManager = GoogleMapManager || {
     GoogleMapManager.add_marker(map, point);
 
     /* save coordinates on clicks */
-    google.maps.event.addListener(gmap, "click", function (overlay, point) {
+    google.maps.event.addListener(gmap, "click", function (event) {
       GoogleMapManager.clear_markers(map);
-      GoogleMapManager.add_market(map, point);
-      GoogleMapManager.savePosition(map, point);
+      GoogleMapManager.add_marker(map, event.latLng);
+      GoogleMapManager.savePosition(map, event.latLng);
     });
   }
 };
