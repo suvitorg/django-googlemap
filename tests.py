@@ -15,12 +15,12 @@ class GoogleMapTest(TestCase):
 
         rendered = widget.render('location', '55,55')
 
-        self.assertTrue('input type="hidden" name="location"' in rendered)
+        self.assertTrue('name="location"' in rendered)
         self.assertTrue('55' in rendered)
 
         rendered = widget.render('location', None)
 
-        self.assertTrue('input type="hidden" name="location"' in rendered)
+        self.assertTrue('name="location"' in rendered)
 
     def test_field(self):
         field = LocationField()
