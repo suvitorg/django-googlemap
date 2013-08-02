@@ -26,8 +26,12 @@ var GoogleMapManager = GoogleMapManager || {
         center = map.attr('center');
         simple = true;
       }
-      else
-        center = map.prev().find('input').val();
+      else {
+        center = map.prev();
+        if (center.get(0).tagName != 'INPUT')
+          center = center.find('input');
+        center = center.val();
+      }
       var latlng = center.split(',', 2);
 
       var point = new google.maps.LatLng(parseFloat(latlng[0]),

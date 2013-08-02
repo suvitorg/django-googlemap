@@ -19,7 +19,7 @@ def get_latlng(value):
     return float(a), float(b)
 
 
-class LocationWidget(forms.widgets.Input):
+class LocationWidget(forms.widgets.TextInput):
 
     class Media:
         js = ["http://maps.googleapis.com/maps/api/js?sensor=false",
